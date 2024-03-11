@@ -1,0 +1,2 @@
+Latest C04 values for pole coordinates (x,y) and UT1 on 4 Janvier 2024   at 0h UTC: x=   131.37 mas
+  y=   203.99mas   UT1-UTC=    7.637 ms
