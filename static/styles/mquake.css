@@ -1,0 +1,118 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8; /* Light gray background */
+    color: #333;
+}
+
+/* Header Styles */
+header {
+    background-color: #35424a; /* Dark blue-gray header */
+    height: 50px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+    margin: 5px;
+}
+
+/* Content Styles */
+.content {
+    padding: 5px; /* Increased padding for content */
+}
+
+/* Query Section Styles */
+.query-section {
+    background-color: #ffffff; /* White query section background */
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.query-section h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #35424a; /* Dark blue-gray heading */
+}
+
+/* Form Styles */
+form,
+.query-section form {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f8f8; /* Light gray form background */
+    padding: 5px;
+}
+
+/* Form Row Styles */
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.form-row label {
+    flex: 1;
+    margin-right: 10px;
+    font-size: 14px;
+    color: #35424a; /* Dark blue-gray label text */
+}
+
+/* Number Input Styles */
+input[type="number"] {
+    width: 50px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+
+/* Submit Button Styles */
+input[type="submit"],
+.center input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff; /* Blue submit button */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.submit-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.center input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #35424a;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%;
+    clear: both; /* Ensures footer stays at the bottom */
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

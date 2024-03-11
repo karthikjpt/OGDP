@@ -1,0 +1,360 @@
+<html lang="en">
+<head>
+<!-- Clarity tracking code for https://www.ogdp.in/ --><script>    (function(c,l,a,r,i,t,y){        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);    })(window, document, "clarity", "script", "k5nuu4meay");</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/quaketable.css') }}">
+    <title>OGDP - Earthquake Data</title>
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Include Leaflet-Heat plugin CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-heat/dist/leaflet-heat.css" />
+</head>
+<body>
+<div class="overall-wrapper">
+    <div class="header">
+        <h1>OGDP - Earthquake Summary</h1>
+        <h2>Your Queries, Our Insights.</h2>
+
+    </div>
+    <div class="container">
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Count</th>
+                <th>Total Energy (J)</th>
+                <th>Richter Scale</th> <!-- Updated table header -->
+                <th>Rank</th>
+            </tr>
+            {% for date_data in earthquake_counts %}
+                <tr>
+                    <td>{{ date_data.date }}</td>
+                    <td>{{ date_data.count }}</td>
+                    <td>{{ date_data.total_energy }}</td>
+                    <td>{{ date_data.richter_scale_magnitude }}</td> <!-- Updated data displayed -->
+                    <td>{{ date_data.rank }}</td>
+                </tr>
+                {% if loop.index % 10 == 0 and loop.index != 30 %}
+                    </table><table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Count</th>
+                        <th>Total Energy (J)</th>
+                        <th>Richter Scale</th> <!-- Updated table header -->
+                        <th>Rank</th>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+    </div>
+    <div class="right">
+        <button onclick="exportAsPNG()">Export as PNG</button>
+        <button onclick="exportAsCSV()">Export as CSV</button>
+    </div>
+
+<h1 class='center'>Earthquake Details</h1>
+<div id="map" style="height: 715px; width: 90%; margin: 0 auto;"></div> <!-- Add a div for the map -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> <!-- Include Leaflet -->
+<script>
+    // Sample earthquake data (replace this with your actual earthquake data)
+    var earthquakeData = [
+        {% for feature in earthquake_data.features %}
+            {
+                lon: {{ feature.geometry.coordinates[0] }},
+                lat: {{ feature.geometry.coordinates[1] }},
+                magnitude: {{ feature.properties.mag }},
+                depth: {{ feature.geometry.coordinates[2] }},
+                date: new Date("{{ feature.properties.time }}"), // Convert date string to Date object
+                location: "{{ feature.properties.flynn_region }}"
+            },
+        {% endfor %}
+    ];
+
+    // Initialize the map
+    var map = L.map('map').setView([0, 0], 2);
+
+    // Create an OpenStreetMap tile layer
+    var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    });
+
+    // Create a USGS tectonic plate boundaries tile layer
+    var tectonicLayer = L.tileLayer('https://earthquake.usgs.gov/basemap/tiles/plates/{z}/{x}/{y}.png', {
+        attribution: '© USGS'
+    });
+
+    // Create a layer group to hold both layers
+    var mapLayers = L.layerGroup([streets, tectonicLayer]);
+
+    // Add the layer group to the map
+    mapLayers.addTo(map);
+
+    // Calculate date thresholds for different time periods
+    var threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+    var sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    var fifteenDaysAgo = new Date();
+    fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
+
+    // Separate data into three arrays based on time period
+    var newData = [];
+    var recentData = [];
+    var mediumData = [];
+    var oldData = [];
+
+    for (var i = 0; i < earthquakeData.length; i++) {
+        var dataPoint = earthquakeData[i];
+
+        if (dataPoint.date.getTime() >= threeDaysAgo.getTime()) {
+            newData.push(dataPoint);
+        } else if (dataPoint.date.getTime() >= sevenDaysAgo.getTime()) {
+            recentData.push(dataPoint);
+        } else if (dataPoint.date.getTime() >= fifteenDaysAgo.getTime()) {
+            mediumData.push(dataPoint);
+        } else {
+            oldData.push(dataPoint);
+        }
+    }
+
+    // Function to calculate radius based on magnitude
+    function calculateRadius(magnitude) {
+        // Adjust the multiplier as needed for appropriate scaling
+        return Math.pow(2, magnitude) * 900;
+    }
+
+    // Add earthquake markers to the map
+    function addMarkers(dataArray, color) {
+        for (var i = 0; i < dataArray.length; i++) {
+            var dataPoint = dataArray[i];
+            var radius = calculateRadius(dataPoint.magnitude);
+
+            // Format date in UTC
+            var utcDate = dataPoint.date.toUTCString();
+
+            var popupContent = `
+                <strong>Date (UTC):</strong> ${utcDate}<br>
+                <strong>Magnitude:</strong> ${dataPoint.magnitude}<br>
+                <strong>Depth:</strong> ${dataPoint.depth} km<br>
+                <strong>Latitude:</strong> ${dataPoint.lat}<br>
+                <strong>Longitude:</strong> ${dataPoint.lon}<br>
+                <strong>Location:</strong> ${dataPoint.location}
+            `;
+
+            L.circle([dataPoint.lat, dataPoint.lon], {
+                color: color,
+                fillColor: color,
+                fillOpacity: 1,
+                radius: radius
+            }).bindPopup(popupContent).addTo(map);
+        }
+    }
+
+    // Call the function for each time period
+    addMarkers(oldData, 'green');   // Older data in green
+    addMarkers(mediumData, 'blue'); // Medium-aged data in blue
+    addMarkers(recentData, 'orange');  // Recent data in red
+    addMarkers(newData, 'red');  // Recent data in red
+
+    // Add layer control for switching between map layers
+    var baseLayers = {
+        "Streets + Tectonic Plates": mapLayers,
+        "Streets": streets,
+        "Tectonic Plates": tectonicLayer
+    };
+    L.control.layers(baseLayers).addTo(map);
+
+    // Add legend to the map
+    var legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'legend');
+        div.innerHTML += '<i style="background: red"></i>Latest 3 Days | ';
+        div.innerHTML += '<i style="background: orange"></i>3 to 7 Days | ';
+        div.innerHTML += '<i style="background: blue"></i>7 to 15 Days Ago | ';
+        div.innerHTML += '<i style="background: green"></i>15+ Days Ago ';
+        div.innerHTML += ' |  www.ogdp.in ';
+        return div;
+    };
+
+    legend.addTo(map);
+
+</script>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<div id="depthChart" style="width: 96%; height: 760px; margin: 0 auto;"></div>
+<script>
+// Function to create a 3D depth chart with the specified color scheme
+function createDepthChart(dataArray) {
+    var data = [{
+        type: 'scatter3d',
+        mode: 'markers',
+        x: dataArray.map(point => point.lon),
+        y: dataArray.map(point => point.lat),
+        z: dataArray.map(point => point.depth),
+        marker: {
+            size: 2,
+            color: dataArray.map(point => {
+                var timeDifference = new Date() - point.date;
+                var daysDifference = timeDifference / (1000 * 3600 * 24);
+
+                if (daysDifference <= 3) {
+                    return 'red';
+                } else if (daysDifference <= 7) {
+                    return 'orange'; // Change color to orange for 3 to 7 days
+                } else if (daysDifference <= 15) {
+                    return 'blue'; // Change color to blue for 7 to 15 days
+                } else {
+                    return 'green';
+                }
+            }),
+            colorscale: 'Viridis'
+        },
+        text: dataArray.map(point =>
+            `Location: ${point.location}<br>Date: ${point.date.toUTCString()}<br>Magnitude: ${point.magnitude}`
+        )
+    }];
+
+    var layout = {
+        scene: {
+            xaxis: { title: 'Longitude' },
+            yaxis: { title: 'Latitude' },
+            zaxis: { title: 'Depth (km)' },
+            aspectratio: { x: 2, y: 1, z: 1 },
+            camera: {
+                eye: { x: 0, y: -2, z: 0 },
+                center: { x: 0, y: 0, z: 0 },
+                up: { x: 0, y: 0, z: 1 }
+            }
+        }
+    };
+
+    Plotly.newPlot('depthChart', data, layout);
+}
+
+// Call the function to create the depth chart with the earthquakeData array
+createDepthChart(earthquakeData);
+
+</script>
+
+"Data Attributed to EMSC - European-Mediterranean Seismological Centre (https://www.seismicportal.eu/fdsn-wsevent.html)"
+<ul>
+    {% if earthquake_data %}
+        {% for feature in earthquake_data.features %}
+            <li>
+                <strong>Date:</strong> {{ feature.properties.formatted_time }},
+                <strong>Magnitude:</strong> {{ feature.properties.mag | format_magnitude }},
+                <strong>Depth:</strong> {{ '%d' | format(feature.geometry.coordinates[2]) }} km,
+                <strong>Latitude:</strong> {{ feature.geometry.coordinates[1] }},
+                <strong>Longitude:</strong> {{ feature.geometry.coordinates[0] }},
+                <strong>Location:</strong> {{ feature.properties.flynn_region }}
+            </li>
+        {% endfor %}
+    {% else %}
+        <p>Error: Unable to fetch earthquake data.</p>
+    {% endif %}
+</ul>
+<nav class="home-btn-container">
+    <a href="/" class="home-btn">Home</a>
+</nav>
+<script>
+    function exportAsPNG() {
+        // Select the table container element
+        const tableContainer = document.querySelector('.container');
+
+        // Use html2canvas to capture the container as a canvas with white background
+        html2canvas(tableContainer, { backgroundColor: "#FFFFFF" })
+            .then(canvas => {
+                // Create a new canvas to hold the watermark
+                const watermarkCanvas = document.createElement('canvas');
+                watermarkCanvas.width = canvas.width;
+                watermarkCanvas.height = canvas.height;
+                const watermarkCtx = watermarkCanvas.getContext('2d');
+
+                // Set watermark properties
+                watermarkCtx.font = "15px Arial";
+                watermarkCtx.fillStyle = "black"; // Set watermark text color to black
+                const watermarkText = "www.ogdp.in"; // Watermark text
+                const textMetrics = watermarkCtx.measureText(watermarkText);
+                const x = (canvas.width - textMetrics.width) / 2; // Position watermark in the center horizontally
+                const y = canvas.height - 5; // Position watermark 5px from the bottom
+                watermarkCtx.fillText(watermarkText, x, y); // Customize watermark text and position
+
+                // Merge the main canvas and watermark canvas
+                const mergedCanvas = document.createElement('canvas');
+                mergedCanvas.width = canvas.width;
+                mergedCanvas.height = canvas.height;
+                const mergedCtx = mergedCanvas.getContext('2d');
+                mergedCtx.drawImage(canvas, 0, 0);
+                mergedCtx.drawImage(watermarkCanvas, 0, 0);
+
+                // Convert the merged canvas to a data URL representing a PNG image
+                const imgData = mergedCanvas.toDataURL('image/png');
+
+                // Create an anchor element to trigger the download
+                const link = document.createElement('a');
+                const todayDate = new Date().toISOString().slice(0, 10); // Get today's date in 'YYYY-MM-DD' format
+                const fileName = `earthquake_summary_${todayDate}.png`; // Update the filename to include today's date
+
+                link.download = fileName;
+                link.href = imgData;
+                link.click();
+            })
+            .catch(error => {
+                console.error('Error occurred during canvas generation:', error);
+            });
+    }
+    function exportAsCSV() {
+        const tables = document.querySelectorAll('.container table');
+
+        let headerIncluded = false;
+        let mergedData = [];
+
+        tables.forEach((table, index) => {
+            const rows = table.querySelectorAll('tr');
+            const data = [];
+
+            rows.forEach((row, rowIndex) => {
+                const rowData = [];
+                const cells = row.querySelectorAll('td, th');
+
+                cells.forEach((cell, cellIndex) => {
+                    if (!headerIncluded || rowIndex > 0) {
+                        rowData.push(cell.innerText);
+                    }
+                });
+
+                if (!headerIncluded || rowIndex > 0) {
+                    data.push(rowData.join(','));
+                }
+            });
+
+            if (!headerIncluded) {
+                mergedData = data;
+                headerIncluded = true;
+            } else {
+                mergedData = mergedData.concat(data);
+            }
+        });
+
+        const csvContent = 'data:text/csv;charset=utf-8,' + mergedData.join('\n');
+        const encodedUri = encodeURI(csvContent);
+
+        const link = document.createElement('a');
+        const todayDate = new Date().toISOString().slice(0, 10); // Get today's date in 'YYYY-MM-DD' format
+        const fileName = `earthquake_summary_${todayDate}.csv`; // Update the filename to include today's date
+
+        link.setAttribute('download', fileName);
+        link.setAttribute('href', encodedUri);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+</div>
+</body>
+</html>

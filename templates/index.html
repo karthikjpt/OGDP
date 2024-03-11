@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+    <!-- Clarity tracking code for https://www.ogdp.in/ --><script>    (function(c,l,a,r,i,t,y){        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);    })(window, document, "clarity", "script", "k5nuu4meay");</script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Google Ad and Analytics scripts -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/jsbygoogle.js?client=ca-pub-2288272636368456" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>Organized Geophysical Data Page</title>
+    <meta name="description" content="Explore a customizable earthquake summary table, map, and 3D depth chart. Input parameters for depth, magnitude, latitude, and longitude to retrieve recent earthquake data from USGS and EMSC. Discover precise pole coordinates and Delta T (UT1-TAI) values on our user-friendly geophysical data site.">
+    <meta name="keywords" content="geophysical data, earthquakes, earthquake map, earthquake table, earthquake chart, earthquake summary, earth rotational speed, polar wander, pole coordinates, volcano reports, solar activity">
+    <meta name="author" content="Karthik Subramaniam">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/home.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    </head>
+<body>
+    <header>
+        <h1></h1>
+    </header>
+    <div class="wrapper">
+        <nav class="sidebar">
+            <center>
+                <div class="unique-container">
+                    <h4><img src="{{ url_for('static', filename='images/OGDP.png') }}" alt="OGDP"> Organized Geophysical Data Page </h4>
+                </div>
+            </center>
+            <h3>Graphs</h3>
+            <ul>
+                <li><a href="/pvegraph">Pole Coordinates, Volcanic Eruption & Min M6 Quake in Yearly Plot.</a></li>
+                <li><a href="/minimum-depth-wise-earthquake-count-graph">Minimum depth-wise earthquake count chart.</a></li>
+                <li><a href="/quakemap">Min M6 Quakes in Latitude Map</a></li>
+                <li><a href="/volcanomap">Worldwide Volcanoes in Latitude Map</a></li>
+                <li><a href="/polegraph">Pole Coordinates (x+y) variations</a></li>
+                <!-- Add more links as needed -->
+            </ul>
+            <h3>Tools</h3>
+            <ul>
+                <li><a href="/csv_to_quake_summary">CSV file to Quake summary</a></li>
+                <li><a href="/datefill">Fill missing dates</a></li>
+                <li><a href="/netCDFtoCSV">Unidata NetCDF file to CSV</a></li>
+                <li><a href="/netcdfcsvmerge">Merge and/or extract columns in CSV</a></li>
+                <!-- Add more links as needed -->
+            </ul>
+            <h3>Reports</h3>
+                <ul>
+                    <li><a href="/volcanic_reports"> Volcano Eruption reports</a></li>
+                    <li><a href="/noaa_swpc_sgarf">Solar-Geophysical Activity report</a>
+                    <li><a href="/noaa_swpc_weekly">Solar-Geophysical Weekly Highlights and Forecasts reports</a></li>
+                    <!-- Add more data-related links as needed -->
+                </ul>
+            <h3>Downloads</h3>
+            <ul>
+                <li><a href="https://1drv.ms/f/s!AjauQtGHAuY6hrNkZxdsdqH3xg6psw?e=OXZf3E">Solarwind - f1m: DSCOVR Faraday Cup Level 2 One Minute Averages in CSV </a></li>
+                <!-- Add more links as needed -->
+            </ul>
+            <h3>Sources</h3>
+            <ul>
+                <li><a href="https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson">USGS Earthquake Data</a></li>
+                <li><a href="https://www.seismicportal.eu/fdsnws/event/1/query?format=json">EMSC Earthquake Data</a></li>
+                <li><a href="https://volcano.si.edu/news/WeeklyVolcanoRSS.xml">Volcano Data</a></li>
+                <li><a href="https://hpiers.obspm.fr/eop-pc/index.php">Earth Orientation Parameters</a></li>
+                <li><a href="https://services.swpc.noaa.gov/text/sgarf.txt">Solar-Geophysical Activity Data</a></li>
+                <li><a href="https://services.swpc.noaa.gov/text/weekly.txt">Solar Weekly Highlights and Forecasts</a></li>
+                <li><a href="https://www.ngdc.noaa.gov/dscovr/portal/index.html">DSCOVR satellite data</a></li>
+                <li><a href="https://ssd.jpl.nasa.gov/horizons/"> deldot of moon and sun</a></li>
+                <!-- Add more links as needed -->
+            </ul>
+            <div class="gift-section glassy-animation">
+                <h3>Gift to creator ☕</h3>
+                <p>Support the developer of OGDP:</p>
+                    <li>PayPal: <a href="https://www.paypal.me/giftkarthik">@giftkarthik</a></li>
+                    <li>UPI ID: <a id="upi-id" onclick="copyText('9698516141@cnrb')">9698516141@cnrb</a></li>
+            </div>
+        </nav>
+        <div class="content">
+            <nav class="topbar">
+                <ul>
+                    <!-- Topbar links if needed -->
+                </ul>
+            </nav>
+
+
+            <div class="content">
+                    <div class="gravity">
+                        <center><h3>Delta T daily variation</h3></center>
+                        <p>Generating monthly / yearly plots of the Delta T (UT1-TAI) daily variation might help you visualize the Earth's gravitational interaction with the Moon and the Sun. 'Delta' represents the distance between a celestial object and an observer at a specific time, 'deldot' is the rate of change of 'delta'. A positive "deldot" means the target center is moving away from the observer(Geocentric), negative indicates movement toward the observer.</p>
+                    </li>
+                        <div class="image-container">
+                            <img src="{{ url_for('static', filename='images/gravity_plot.png') }}" alt="Plot gravity" class="plot-gravity">
+                        </div>
+                        <form action="/delta-t" method="post" class="custom-form">
+                            <div class="form-row">
+                                <label for="start_date">Start Date:</label>
+                                <input type="date" id="start_date" name="start_date" class="date-input">
+                                <label for="end_date">End Date:</label>
+                                <input type="date" id="end_date" name="end_date" class="date-input">
+                                <input type="submit" value="Plot" class="plot-button">
+                            </div>
+                        </form>
+ For Pole Coordinates (x, y) :
+                        <span class="bullet-links">
+                            <a href="/earth_orientation_parameters_pole_coordinates_x_y">Data</a> -
+                            <a href="/pole_coordinates_dailygraph">Graph and Table</a>
+                        </span>
+                    </div>
+                </div>
+                <br>
+
+    <div class="content">
+            <div class="query-section">
+            <center><h3>Dynamic Earthquake Analysis</h3></center>
+            Explore recent trends in earthquakes based on magnitude, depth, latitude, and longitude.
+                <ul class=dynamic>
+                   <li><a href="/dynamic-earthquake-counts">Click here</a> for counts.</li>
+                   <li><a href="/dynamic-earthquake-energy">Click here</a> for energy released on the Richter scale.</li>
+                </ul>
+                <br>
+            <h3><a href="/mquake">Query Recent Earthquake Data</a></h3>
+            <p>The custom query provides an informational earthquake summary, interactive map and depth chart.</p>
+            <form id="earthquakeForm" onsubmit="return false;">
+                <div class="form-row">
+                    <label for="min_magnitude">* Min Magnitude:</label>
+                    <input type="number" id="min_magnitude" name="min_magnitude" step="any">
+                    <label for="max_magnitude">Max Magnitude:</label>
+                    <input type="number" id="max_magnitude" name="max_magnitude" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="min_depth">Min Depth:</label>
+                    <input type="number" id="min_depth" name="min_depth" step="any">
+                    <label for="max_depth">Max Depth:</label>
+                    <input type="number" id="max_depth" name="max_depth" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="min_latitude">Min Latitude:</label>
+                    <input type="number" id="min_latitude" name="min_latitude" step="any">
+                    <label for="max_latitude">Max Latitude:</label>
+                    <input type="number" id="max_latitude" name="max_latitude" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="min_longitude">Min Longitude:</label>
+                    <input type="number" id="min_longitude" name="min_longitude" step="any">
+                    <label for="max_longitude">Max Longitude:</label>
+                    <input type="number" id="max_longitude" name="max_longitude" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="current_location">Use current location for epicenter:</label>
+                    <button onclick="getCurrentLocation()">Get Current Location</button>
+                    <span id="currentCoordinates"></span>
+                </div>
+                <div class="form-row">
+                    <label for="latitude">Epicenter Latitude:</label>
+                    <input type="number" id="latitude" name="latitude" step="any" readonly>
+                </div>
+                <div class="form-row">
+                    <label for="longitude">Epicenter Longitude:</label>
+                    <input type="number" id="longitude" name="longitude" step="any" readonly>
+                </div>
+                <div class="form-row">
+                    <label for="maxradius">Max Radius in degrees (1 degrees = 111 kilometers):</label>
+                    <input type="number" id="maxradius" name="maxradius" step="any">
+                </div>
+                <div class="form-row submit-buttons">
+                    <input type="submit" onclick="submitForm('/usgs_quake_data_process')" value="Query USGS Data">
+                    <button onclick="clearForm()">Clear Form</button>
+                    <input type="submit" onclick="submitForm('/speu_quake_data_process')" value="Query EMSC Data">
+                </div>
+            </form>
+            <p><a href="/csv_to_quake_summary">Click here</a> for count, energy released in richter scale and rank by uploading csv file.</p>
+    </div>
+        </div>
+            <footer>
+                <p><a href="/privacy-policy">Privacy Policy</a> | Email: <a href="mailto:karthikmi@hotmail.com">karthikmi@hotmail.com</a></p>
+            </footer>
+    </div>
+
+<script>
+
+        function submitForm(endpoint) {
+            const form = document.getElementById('earthquakeForm');
+            const minLat = form.elements['min_latitude'].value;
+            const maxLat = form.elements['max_latitude'].value;
+            const minLong = form.elements['min_longitude'].value;
+            const maxLong = form.elements['max_longitude'].value;
+            const lat = form.elements['latitude'].value;
+            const long = form.elements['longitude'].value;
+            const maxRadius = form.elements['maxradius'].value;
+            const minMagnitude = parseFloat(form.elements['min_magnitude'].value); // Retrieve minMagnitude value
+
+            // Checking conditions for latitude and longitude fields
+            if ((minLat || maxLat || minLong || maxLong) && (lat || long)) {
+                alert("Please fill either 'min_latitude', 'max_latitude', 'min_longitude', 'max_longitude' OR 'latitude', 'longitude', not both.");
+                return; // Prevents form submission
+            }
+
+            // Checking conditions for latitude and longitude range
+            if (isNaN(minLat) || isNaN(maxLat) || isNaN(minLong) || isNaN(maxLong) || minLat < -90 || maxLat > 90 || minLong < -180 || maxLong > 180) {
+                alert("Please enter valid latitude and longitude values. Latitude must be between -90 and 90 degrees, and Longitude must be between -180 and 180 degrees.");
+                return; // Prevents form submission
+            }
+
+            // Additional checks for min and max latitude/longitude
+            if ((minLat !== '' && maxLat !== '' && parseFloat(minLat) > parseFloat(maxLat)) ||
+                (minLong !== '' && maxLong !== '' && parseFloat(minLong) > parseFloat(maxLong))) {
+                alert("Minimum value cannot be greater than Maximum value.");
+                return; // Prevents form submission
+            }
+
+            // Checking conditions for 'maxradius' with 'latitude' and 'longitude'
+            if (maxRadius && (!lat || !long)) {
+                alert("If filling 'maxradius', please provide both latitude and longitude.");
+                return; // Prevents form submission
+            }
+
+            // Checking conditions for 'latitude' and 'longitude' with 'maxradius'
+            if (lat && long) {
+                if (!maxRadius) {
+                    alert("If providing latitude and longitude, please fill in 'maxradius' (between 1 to 9).");
+                    return; // Prevents form submission
+                }
+            }
+
+            // Checking conditions for minimum magnitude
+            if (minMagnitude < 0 || isNaN(minMagnitude) || minMagnitude > 6) {
+                alert("Minimum magnitude must be a valid number greater than or equal to 0 and less than or equal to 6. Negative magnitudes or values greater than 6 are not processed.");
+                return; // Prevents form submission
+            }
+
+            // If all conditions are met, allow form submission
+            const postData = {};
+            const formData = new FormData(form);
+
+            // Extract only user-entered data
+            formData.forEach((value, key) => {
+                if (value !== '') {
+                    postData[key] = value;
+                }
+            });
+
+            // Convert postData to URL query parameters
+            const queryParams = new URLSearchParams(postData).toString();
+
+            // Construct the final URL with user-entered data and submit the form
+            const finalEndpoint = endpoint + '?' + queryParams;
+            window.location.href = finalEndpoint;
+        }
+
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Auto-fill latitude and longitude fields in the form
+                        document.getElementById('latitude').value = latitude;
+                        document.getElementById('longitude').value = longitude;
+                    },
+                    (error) => {
+                        console.error("Error getting location:", error);
+                        alert("Error getting location. Please check your settings or try again later.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+function clearForm() {
+    const form = document.getElementById('earthquakeForm');
+
+    // Reset all input values in the form
+    form.reset();
+
+    // Clear latitude and longitude input fields
+    document.getElementById('latitude').value = '';
+    document.getElementById('longitude').value = '';
+
+    // Clear latitude and longitude displays
+    document.getElementById('latitudeDisplay').textContent = '';
+    document.getElementById('longitudeDisplay').textContent = '';
+}
+
+        $(document).ready(function() {
+            // When an image is clicked, toggle fullscreen view
+            $('.image-container img').click(function() {
+                $(this).toggleClass('fullscreen');
+            });
+        });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector('.custom-form');
+        form.addEventListener('submit', function(event) {
+            const startDate = new Date(document.getElementById('start_date').value);
+            const endDate = new Date(document.getElementById('end_date').value);
+
+            if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) {
+                event.preventDefault(); // Prevent form submission
+                alert('Please enter valid dates / Start Date should be before End Date');
+            }
+        });
+    });
+
+</script>
+<script>
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            alert("Copied to clipboard: " + text);
+        }, function(error) {
+            console.error('Unable to copy to clipboard: ', error);
+        });
+    }
+</script>
+</body>
+</html>
+

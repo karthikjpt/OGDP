@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+<!-- Clarity tracking code for https://www.ogdp.in/ --><script>    (function(c,l,a,r,i,t,y){        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);    })(window, document, "clarity", "script", "k5nuu4meay");</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/volcano.css') }}">
+    <title>Latest Volcanic Eruption Reports</title>
+</head>
+<body>
+    <h1>Latest Volcanic Eruption Reports</h1>
+    <ul>
+        {% for report in reports %}
+            <li>
+                <strong>Title:</strong> {{ report.title }}<br>
+                <strong>Description:</strong> {{ report.description | safe }}  <!-- Use the "safe" filter to render HTML in the description -->
+            </li>
+        {% endfor %}
+    </ul>
+<nav class="home-btn-container">
+    <a href="/" class="home-btn">Home</a>
+</nav>
+</body>
+</html>
+

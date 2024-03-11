@@ -1,0 +1,27 @@
+<html lang="en">
+<head>
+<!-- Clarity tracking code for https://www.ogdp.in/ --><script>    (function(c,l,a,r,i,t,y){        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);    })(window, document, "clarity", "script", "k5nuu4meay");</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2288272636368456"
+     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/upload.css') }}">
+    <title>Upload Files</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="home-btn">Home</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Upload CSV Files</h1>
+        <span>Upload a CSV file extracted from DSCOVR f1m Unidata NetCDF file to merge and/or extract 'data-time', 'sample_count', 'proton_vx_gse', 'proton_vy_gse', 'proton_vz_gse', 'proton_vx_gsm', 'proton_vy_gsm', 'proton_vz_gsm', 'proton_speed', 'proton_density', 'proton_temperature' columns</span>
+        <form action="/merge_and_process_csv" method="post" enctype="multipart/form-data">
+            <input type="file" name="file[]" multiple accept=".csv">
+            <br>
+            <input type="submit" value="Upload and Process">
+        </form>
+    </div>
+</body>
+</html>

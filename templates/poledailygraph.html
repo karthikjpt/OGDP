@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+<!-- Clarity tracking code for https://www.ogdp.in/ --><script>    (function(c,l,a,r,i,t,y){        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);    })(window, document, "clarity", "script", "k5nuu4meay");</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/dailypolegraph.css') }}">
+    <title>Data and Graphs</title>
+</head>
+<body>
+<h1>Pole coordinates Graphs</h1>
+<div class="image-container">
+    <img src="{{ url_for('static', filename='images/ut1_utc_plot_1.png') }}" alt="UT1-UTC">
+    <img src="{{ url_for('static', filename='images/pole_coordinates_plot_2.png') }}" alt="CIP">
+    <img src="{{ url_for('static', filename='images/ut1_utc_variation_plot.png') }}" alt="UT1-UTV Variation">
+    <img src="{{ url_for('static', filename='images/xy_variations_plot_3.png') }}" alt="CIP Variation">
+</div>
+    <h1>Data Table</h1>
+    <div>
+        {{ tables[0]|safe }}
+    </div>
+<center>Data attributed to International Earth Rotation and Reference Systems Service (IERS), Observatoire de Paris, "Earth Orientation Parameters," EOP Product Centre, URL - https://hpiers.obspm.fr/eop-pc/index.php.</center>
+<br><br><br>
+<nav class="home-btn-container">
+    <a href="/" class="home-btn">Home</a>
+</nav>
+    <script>
+        $(document).ready(function() {
+            // When an image is clicked, toggle fullscreen view
+            $('.image-container img').click(function() {
+                $(this).toggleClass('fullscreen');
+            });
+        });
+    </script>
+</body>
+</html>
+

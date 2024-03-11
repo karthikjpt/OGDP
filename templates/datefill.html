@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+<!-- Clarity tracking code for https://www.ogdp.in/ --><script>    (function(c,l,a,r,i,t,y){        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);    })(window, document, "clarity", "script", "k5nuu4meay");</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2288272636368456"
+     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/upload.css') }}">
+    <title>Upload CSV File</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/" class="home-btn">Home</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Upload CSV File</h1>
+        <span>Upload a CSV file with 'date' named column in 'YYYY-MM-DD' format without duplicate dates.</span>
+        <form action="/datefiller" method="post" enctype="multipart/form-data">
+            <label for="file">Choose a file:</label>
+            <input type="file" id="file" name="file" accept=".csv, .xlsx, .xls, .ods">
+            <br>
+            <input type="submit" value="Process and Download">
+        </form>
+    </div>
+</body>
+</html>

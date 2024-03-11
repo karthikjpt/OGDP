@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+    <!-- Clarity tracking code for https://www.ogdp.in/ -->
+    <script>
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i + "?ref=bwt";
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "k5nuu4meay");
+    </script>
+    <!-- Google Ad and Analytics scripts -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/jsbygoogle.js?client=ca-pub-2288272636368456"
+        crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthquake Counts</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 5px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .tables-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center the tables horizontally */
+            margin: 20px;
+        }
+
+        .table-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .table-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table-button {
+            margin: 5px;
+        }
+
+        .download-links {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Earthquake Counts</h1>
+    </header>
+
+    <div class="table-buttons">
+        <button class="btn btn-primary table-button" onclick="showTable('depth')">Depth</button>
+        <button class="btn btn-primary table-button" onclick="showTable('magnitude')">Magnitude</button>
+        <a href="/" class="btn btn-primary">Home</a>
+        <button class="btn btn-primary table-button" onclick="showTable('latitude')">Latitude</button>
+        <button class="btn btn-primary table-button" onclick="showTable('longitude')">Longitude</button>
+    </div>
+
+    <div class="tables-container">
+        <!-- Display magnitude data table -->
+        <div class="table-container" id="magnitude_table"></div>
+
+        <!-- Display depth data table -->
+        <div class="table-container" id="depth_table"></div>
+
+        <!-- Display latitude data table -->
+        <div class="table-container" id="latitude_table"></div>
+
+        <!-- Display longitude data table -->
+        <div class="table-container" id="longitude_table"></div>
+    </div>
+
+    <!-- Download Links -->
+    <div class="download-links text-center">
+        <!-- Update the href attributes with the appropriate URLs -->
+        <a href="/download/earthquake_data" class="btn btn-primary" download>Download Earthquake Data</a>
+        <a href="/download/depth_ranges" class="btn btn-primary" download>Download Depth Ranges</a>
+        <a href="/download/magnitude_ranges" class="btn btn-primary" download>Download Magnitude Ranges</a>
+        <a href="/download/latitude_ranges" class="btn btn-primary" download>Download Latitude Ranges</a>
+        <a href="/download/longitude_ranges" class="btn btn-primary" download>Download Longitude Ranges</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof Tabulator !== 'function') {
+                console.error('Tabulator library not found!');
+                return;
+            }
+
+            // Initial table setup
+            var depthTable = new Tabulator("#depth_table", {
+                layout: "fitColumns",
+                columns: [
+                    { title: "Date", field: "date", headerSort: true, width: "fitData", minWidth: 81 },  // Set a minimum width
+                    { title: "-600", field: "-600", headerSort: true },
+                    { title: "-400", field: "-400", headerSort: true },
+                    { title: "-240", field: "-240", headerSort: true },
+                    { title: "-180", field: "-180", headerSort: true },
+                    { title: "-120", field: "-120", headerSort: true },
+                    { title: "-60", field: "-60", headerSort: true },
+                    { title: "-30", field: "-30", headerSort: true },
+                    { title: "-20", field: "-20", headerSort: true },
+                    { title: "-10", field: "-10", headerSort: true },
+                    { title: "-5", field: "-5", headerSort: true },
+                    { title: "0", field: "0", headerSort: true },
+                    // ... (other columns)
+                ],
+                data: {{ depth_data.to_json(orient='records') | safe }},
+                rowFormatter: function (row) {
+                    row.getElement().style.maxHeight = "20px";
+                },
+                initialSort: [
+                    { column: "date", dir: "dsc" }
+                ],
+            });
+
+            // Additional tables setup
+            var magnitudeTable = new Tabulator("#magnitude_table", {
+                layout: "fitColumns",
+                columns: [
+                    { title: "Date", field: "date", headerSort: true, width: "fitData", minWidth: 81 },  // Set a minimum width
+                    { title: "M1", field: "M1", headerSort: true },
+                    { title: "M2", field: "M2", headerSort: true },
+                    { title: "M3", field: "M3", headerSort: true },
+                    { title: "M4", field: "M4", headerSort: true },
+                    { title: "M5", field: "M5", headerSort: true },
+                    { title: "M6", field: "M6", headerSort: true },
+                    { title: "M7", field: "M7", headerSort: true },
+                    { title: "M8", field: "M8", headerSort: true },
+                    { title: "M9", field: "M9", headerSort: true },
+                    { title: "M10", field: "M10", headerSort: true },
+                    // ... (other columns)
+                ],
+                data: {{ magnitude_data.to_json(orient='records') | safe }},
+                rowFormatter: function (row) {
+                    row.getElement().style.maxHeight = "20px";
+                },
+                initialSort: [
+                    { column: "date", dir: "dsc" }
+                ],
+            });
+
+            var latitudeTable = new Tabulator("#latitude_table", {
+                layout: "fitColumns",
+                columns: [
+                    { title: "Date", field: "date", headerSort: true, width: "fitData", minWidth: 81 },
+                    { title: "-80", field: "-80", headerSort: true },
+                    { title: "-70", field: "-70", headerSort: true },
+                    { title: "-60", field: "-60", headerSort: true },
+                    { title: "-50", field: "-50", headerSort: true },
+                    { title: "-40", field: "-40", headerSort: true },
+                    { title: "-30", field: "-30", headerSort: true },
+                    { title: "-20", field: "-20", headerSort: true },
+                    { title: "-15", field: "-15", headerSort: true },
+                    { title: "-10", field: "-10", headerSort: true },
+                    { title: "-5", field: "-5", headerSort: true },
+                    { title: "0", field: "0", headerSort: true },
+                    { title: "5", field: "5", headerSort: true },
+                    { title: "10", field: "10", headerSort: true },
+                    { title: "15", field: "15", headerSort: true },
+                    { title: "20", field: "20", headerSort: true },
+                    { title: "30", field: "30", headerSort: true },
+                    { title: "40", field: "40", headerSort: true },
+                    { title: "50", field: "50", headerSort: true },
+                    { title: "60", field: "60", headerSort: true },
+                    { title: "70", field: "70", headerSort: true },
+                    { title: "80", field: "80", headerSort: true },
+                    { title: "90", field: "90", headerSort: true },
+
+                    // ... (other columns)
+                ],
+                data: {{ latitude_data.to_json(orient='records') | safe }},
+                rowFormatter: function (row) {
+                    row.getElement().style.maxHeight = "20px";
+                },
+                initialSort: [
+                    { column: "date", dir: "dsc" }
+                ],
+            });
+
+            var longitudeTable = new Tabulator("#longitude_table", {
+                layout: "fitColumns",
+                columns: [
+                    { title: "Date", field: "date", headerSort: true, width: "fitData", minWidth: 81 },
+                    { title: "-170", field: "-170", headerSort: true },
+                    { title: "-160", field: "-160", headerSort: true },
+                    { title: "-150", field: "-150", headerSort: true },
+                    { title: "-140", field: "-140", headerSort: true },
+                    { title: "-130", field: "-130", headerSort: true },
+                    { title: "-120", field: "-120", headerSort: true },
+                    { title: "-110", field: "-110", headerSort: true },
+                    { title: "-100", field: "-100", headerSort: true },
+                    { title: "-90", field: "-90", headerSort: true },
+                    { title: "-80", field: "-80", headerSort: true },
+                    { title: "-70", field: "-70", headerSort: true },
+                    { title: "-60", field: "-60", headerSort: true },
+                    { title: "-50", field: "-50", headerSort: true },
+                    { title: "-40", field: "-40", headerSort: true },
+                    { title: "-30", field: "-30", headerSort: true },
+                    { title: "-20", field: "-20", headerSort: true },
+                    { title: "-10", field: "-10", headerSort: true },
+                    { title: "0", field: "0", headerSort: true },
+                    { title: "10", field: "10", headerSort: true },
+                    { title: "20", field: "20", headerSort: true },
+                    { title: "30", field: "30", headerSort: true },
+                    { title: "40", field: "40", headerSort: true },
+                    { title: "50", field: "50", headerSort: true },
+                    { title: "60", field: "60", headerSort: true },
+                    { title: "70", field: "70", headerSort: true },
+                    { title: "80", field: "80", headerSort: true },
+                    { title: "90", field: "90", headerSort: true },
+                    { title: "100", field: "100", headerSort: true },
+                    { title: "110", field: "110", headerSort: true },
+                    { title: "120", field: "120", headerSort: true },
+                    { title: "130", field: "130", headerSort: true },
+                    { title: "140", field: "140", headerSort: true },
+                    { title: "150", field: "150", headerSort: true },
+                    { title: "160", field: "160", headerSort: true },
+                    { title: "170", field: "170", headerSort: true },
+                    { title: "180", field: "180", headerSort: true },
+                    // ... (other columns)
+                ],
+                data: {{ longitude_data.to_json(orient='records') | safe }},
+                rowFormatter: function (row) {
+                    row.getElement().style.maxHeight = "20px";
+                },
+                initialSort: [
+                    { column: "date", dir: "dsc" }
+                ],
+            });
+
+            window.showTable = function (tableName) {
+                // Get all table elements
+                var tables = document.querySelectorAll('.table-container');
+
+                // Hide all tables
+                tables.forEach(function (table) {
+                    table.style.display = 'none';
+                });
+
+                // Show the selected table
+                var selectedTable = document.getElementById(tableName + '_table');
+                if (selectedTable) {
+                    selectedTable.style.display = 'block';
+
+                    // Smooth scroll to the selected table
+                    selectedTable.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+
+            // Show the depth table by default
+            showTable('depth');
+        });
+    </script>
+<br>
+<center>"Data Attributed to EMSC - European-Mediterranean Seismological Centre (https://www.seismicportal.eu/fdsn-wsevent.html)"</center>
+<br>
+</body>
+
+</html>

@@ -1,0 +1,239 @@
+.overall-wrapper {
+    max-width: 97%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6; /* Improved readability by setting line height */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Set minimum height to the viewport height */
+    justify-content: space-between; /* Align items with space between */
+}
+
+#map {
+    height: 715px;
+    padding-right: 40px;
+    padding-top: 20px;
+    padding-left: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 20px;
+}
+
+#depthChart {
+    position: relative; /* Ensure that the depth chart container is positioned */
+    z-index: 1; /* Set a lower z-index value than the home button container */
+    height: 760px;
+}
+
+.legend {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.info {
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    margin: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.right {
+    padding-right: 20px; /* Adjust the padding as needed */
+}
+
+.legend {
+    background: white;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 10px;
+}
+
+.legend i {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 6px;
+    border-radius: 50%;
+}
+
+
+.container {
+    background-color: white; /* Set the background color to white */
+    padding: 0px; /* Adjust padding as needed */
+}
+.table-container {
+    border: 1px solid black; /* Optional: Add border for visualization */
+}
+table {
+    width: 100%; /* Make table take full width */
+    border-collapse: collapse; /* Optional: Collapse table borders */
+}
+th, td {
+    border: 1px solid black; /* Optional: Add borders for cells */
+    padding: 8px; /* Adjust padding as needed */
+    text-align: left; /* Optional: Align cell content */
+}
+.right {
+    text-align: right;
+    margin-bottom: 10px; /* Adjust the margin as needed */
+}
+/* Header styles */
+.header {
+    background-color: #0078d4;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+h1 {
+    font-size: 24px;
+    text-align: center;
+    margin: 0;
+    letter-spacing: 1px; /* Adds space between letters for better visibility */
+}
+
+h2 {
+    font-size: 14px;
+    text-align: center;
+    margin: 0;
+    letter-spacing: 1px; /* Adds space between letters for better visibility */
+}
+
+/* Styles for the container of the home button */
+.home-btn-container {
+    position: fixed;
+    bottom: 20px; /* Adjust the distance from the bottom as needed */
+    left: 50%; /* Place it at the horizontal center */
+    transform: translateX(-50%); /* Adjust to center align horizontally */
+    z-index: 0; /* Set a lower z-index value */
+}
+
+/* Styles for the home button */
+.home-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+}
+
+.home-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05); /* Scale effect on hover */
+}
+
+/* Center alignment utility class */
+
+.center {
+    text-align: center;
+}
+
+/* Updated styles for displaying tables horizontally */
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling if tables exceed screen width */
+    padding: 10px; /* Add padding to the container for spacing */
+    display: flex;
+    gap: 20px; /* Add space between tables */
+}
+
+.table-container table {
+    border-collapse: collapse;
+    flex: 0 0 auto; /* Ensure tables do not grow or shrink, maintain their set width */
+    width: calc(33.33% - 20px); /* Set each table to take one-third of the screen width with space between */
+    margin: 0; /* Remove margin to prevent unwanted space */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 14px; /* Reduced font size for better fit */
+    min-width: 0; /* Reset min-width to ensure responsiveness */
+}
+
+/* Center text utility class */
+.center-text {
+    text-align: center;
+}
+
+/* Table styles */
+table {
+    border-collapse: collapse;
+    width: 100%; /* Makes tables responsive within their containers */
+}
+table th,
+table td {
+    border: 1px solid black;
+    padding: 10px; /* Increased padding for better spacing */
+    text-align: center;
+}
+
+/* Horizontal links styles */
+.horizontal-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Adds space between links */
+    margin-top: 15px; /* Provides some space between content and links */
+}
+.horizontal-links a {
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px; /* Adds rounded corners to links */
+    background-color: #0078d4;
+    color: #fff;
+    transition: background-color 0.3s ease; /* Smooth color transition */
+}
+.horizontal-links a:hover {
+    background-color: #005a9e; /* Change background color on hover */
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+    /* Adjustments for smaller screens */
+    .table-container {
+        flex-wrap: wrap; /* Allow tables to wrap on smaller screens */
+        justify-content: center; /* Center tables when they wrap */
+    }
+    .table-container table {
+        width: calc(100% - 20px); /* Tables take full width on smaller screens */
+        margin-bottom: 20px; /* Add space between tables */
+    }
+
+    /* Font size adjustments */
+    .header h1 {
+        font-size: 28px; /* Decrease font size for better fit on mobile */
+    }
+    table th,
+    table td {
+        padding: 8px; /* Reduce padding for smaller screens */
+    }
+
+    .horizontal-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px; /* Adjust the space between links */
+        padding: 0 10px; /* Add some padding to the links container */
+        margin-bottom: 15px; /* Add space below links */
+    }
+    .horizontal-links a {
+        flex: 1 1 auto;
+        max-width: calc(50% - 10px); /* Set maximum width for each link */
+        padding: 6px 10px; /* Adjust padding for smaller size */
+        font-size: 12px; /* Reduce font size for smaller screens */
+        text-align: center;
+    }
+}
+

@@ -1,0 +1,150 @@
+/* Global styles */
+body {
+    font-family: "Liberation Sans", sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Header styles */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0; /* Adjusted header padding */
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.home-btn {
+    padding: 2px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Added color transition */
+    text-decoration: none;
+    margin-top: 0px; /* Adjusted margin-top */
+    display: inline-block; /* Ensures button positioning */
+}
+
+.home-btn:hover {
+    background-color: #45a049;
+    color: #f4f4f4; /* Change text color on hover */
+}
+
+/* Header text styles */
+header h1 {
+    font-size: 24px; /* Adjusted header font size */
+    margin: 10px 0 5px; /* Adjusted margin */
+    text-transform: uppercase;
+}
+
+/* Navigation menu styles */
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffd700; /* Change color on hover */
+}
+
+/* Image container styles */
+.image-container {
+    text-align: center;
+    margin-top: 100px; /* Adjusted margin-top for the image */
+    padding: 10px 0; /* Added padding for better spacing */
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease; /* Added transform transition */
+}
+
+.image-container img:hover {
+    transform: scale(1.05); /* Scale the image on hover */
+}
+
+/* Table styles */
+table {
+    width: 50%;
+    margin: 20px auto; /* Center the table */
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Media query for responsiveness */
+@media screen and (max-width: 768px) {
+    /* Adjust styles for smaller screens */
+
+    /* Header styles */
+    header {
+        padding: 8px 0; /* Decrease header padding for smaller screens */
+    }
+    header h1 {
+        font-size: 18px; /* Reduce header font size for smaller screens */
+    }
+
+    /* Navigation menu styles */
+    nav ul {
+        display: none; /* Hide the menu for smaller screens */
+    }
+
+    /* Mobile-friendly menu icon */
+    .menu-icon {
+        display: block; /* Display the mobile menu icon */
+        /* Add styles for the hamburger menu icon */
+    }
+
+    /* Show the menu when mobile menu icon is clicked */
+    .menu-open {
+        display: block; /* Display the menu when the mobile icon is clicked */
+    }
+
+    /* Home button styles */
+    .home-btn {
+        width: 100%; /* Make the button full width on smaller screens */
+        margin-top: 10px; /* Adjust margin for better spacing */
+    }
+
+    /* Image container styles */
+    .image-container {
+        margin-top: 100px; /* Adjusted margin-top for the image */
+    }
+
+    /* Table styles */
+    table {
+        width: 100%; /* Make the table full width on smaller screens */
+        overflow-x: auto; /* Add horizontal scroll for smaller screens */
+    }
+}
+

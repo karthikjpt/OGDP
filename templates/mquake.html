@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organized Geophysical Data Page</title>
+    <meta name="description" content="Explore a customizable earthquake summary table, map, and 3D depth chart. Input parameters for depth, magnitude, latitude, and longitude to retrieve recent earthquake data from USGS and EMSC.">
+    <meta name="keywords" content="earthquakes, daily count, summary report, rank, richter scale, total energy released, map, table, 3D chart, 3D plot">
+    <meta name="author" content="Karthik Subramaniam">
+
+    <!-- Clarity tracking code -->
+    <script>
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "k5nuu4meay");
+    </script>
+
+    <!-- jQuery Library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/mquake.css') }}">
+    <!-- Google Ad and Analytics scripts -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/jsbygoogle.js?client=ca-pub-2288272636368456" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <header>
+    <h1>OGDP</h1>
+    </header>
+    <div class="content">
+            <div class="query-section">
+                <h2>Query Recent Earthquake Data</h2>
+            <p>Define one or more query criteria for summarizing earthquakes; otherwise, the result will be generated based on the overall data. For older data, you can use our tool by clicking <a href="/csv_to_quake_summary">here</a>.</p>
+
+            <form id="earthquakeForm" onsubmit="return false;">
+                <div class="form-row">
+                    <label for="min_magnitude">* Min Magnitude:</label>
+                    <input type="number" id="min_magnitude" name="min_magnitude" step="any">
+                    <label for="max_magnitude">Max Magnitude:</label>
+                    <input type="number" id="max_magnitude" name="max_magnitude" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="min_depth">Min Depth:</label>
+                    <input type="number" id="min_depth" name="min_depth" step="any">
+                    <label for="max_depth">Max Depth:</label>
+                    <input type="number" id="max_depth" name="max_depth" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="min_latitude">Min Latitude:</label>
+                    <input type="number" id="min_latitude" name="min_latitude" step="any">
+                    <label for="max_latitude">Max Latitude:</label>
+                    <input type="number" id="max_latitude" name="max_latitude" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="min_longitude">Min Longitude:</label>
+                    <input type="number" id="min_longitude" name="min_longitude" step="any">
+                    <label for="max_longitude">Max Longitude:</label>
+                    <input type="number" id="max_longitude" name="max_longitude" step="any">
+                </div>
+                <div class="form-row">
+                    <label for="current_location">Use current location for epicenter:</label>
+                    <button onclick="getCurrentLocation()">Get Current Location</button>
+                    <span id="currentCoordinates"></span>
+                </div>
+                <div class="form-row">
+                    <label for="latitude">Epicenter Latitude:</label>
+                    <input type="number" id="latitude" name="latitude" step="any" readonly>
+                </div>
+                <div class="form-row">
+                    <label for="longitude">Epicenter Longitude:</label>
+                    <input type="number" id="longitude" name="longitude" step="any" readonly>
+                </div>
+                <div class="form-row">
+                    <label for="maxradius">Max Radius in degrees (1 degrees = 111 kilometers):</label>
+                    <input type="number" id="maxradius" name="maxradius" step="any">
+                </div>
+                <div class="form-row submit-buttons">
+                    <input type="submit" onclick="submitForm('/usgs_quake_data_process')" value="Query USGS Data">
+                    <button onclick="clearForm()">Clear Form</button>
+                    <input type="submit" onclick="submitForm('/speu_quake_data_process')" value="Query EMSC Data">
+                </div>
+            </form>
+                <p>Explore recent trends in earthquake counts based on magnitude, depth, latitude, and longitude. Click <a href="/dynamic-earthquake-counts">here</a> to view and download the data.</p>        </div>
+    </div>
+        </div>
+    </div>
+
+<script>
+
+        function submitForm(endpoint) {
+            const form = document.getElementById('earthquakeForm');
+            const minLat = form.elements['min_latitude'].value;
+            const maxLat = form.elements['max_latitude'].value;
+            const minLong = form.elements['min_longitude'].value;
+            const maxLong = form.elements['max_longitude'].value;
+            const lat = form.elements['latitude'].value;
+            const long = form.elements['longitude'].value;
+            const maxRadius = form.elements['maxradius'].value;
+            const minMagnitude = parseFloat(form.elements['min_magnitude'].value); // Retrieve minMagnitude value
+
+            // Checking conditions for latitude and longitude fields
+            if ((minLat || maxLat || minLong || maxLong) && (lat || long)) {
+                alert("Please fill either 'min_latitude', 'max_latitude', 'min_longitude', 'max_longitude' OR 'latitude', 'longitude', not both.");
+                return; // Prevents form submission
+            }
+
+            // Checking conditions for latitude and longitude range
+            if (isNaN(minLat) || isNaN(maxLat) || isNaN(minLong) || isNaN(maxLong) || minLat < -90 || maxLat > 90 || minLong < -180 || maxLong > 180) {
+                alert("Please enter valid latitude and longitude values. Latitude must be between -90 and 90 degrees, and Longitude must be between -180 and 180 degrees.");
+                return; // Prevents form submission
+            }
+
+            // Additional checks for min and max latitude/longitude
+            if ((minLat !== '' && maxLat !== '' && parseFloat(minLat) > parseFloat(maxLat)) ||
+                (minLong !== '' && maxLong !== '' && parseFloat(minLong) > parseFloat(maxLong))) {
+                alert("Minimum value cannot be greater than Maximum value.");
+                return; // Prevents form submission
+            }
+
+            // Checking conditions for 'maxradius' with 'latitude' and 'longitude'
+            if (maxRadius && (!lat || !long)) {
+                alert("If filling 'maxradius', please provide both latitude and longitude.");
+                return; // Prevents form submission
+            }
+
+            // Checking conditions for 'latitude' and 'longitude' with 'maxradius'
+            if (lat && long) {
+                if (!maxRadius) {
+                    alert("If providing latitude and longitude, please fill in 'maxradius' (between 1 to 9).");
+                    return; // Prevents form submission
+                }
+            }
+
+            // Checking conditions for minimum magnitude
+            if (minMagnitude < 0 || isNaN(minMagnitude) || minMagnitude > 6) {
+                alert("Minimum magnitude must be a valid number greater than or equal to 0 and less than or equal to 6. Negative magnitudes or values greater than 6 are not processed.");
+                return; // Prevents form submission
+            }
+
+            // If all conditions are met, allow form submission
+            const postData = {};
+            const formData = new FormData(form);
+
+            // Extract only user-entered data
+            formData.forEach((value, key) => {
+                if (value !== '') {
+                    postData[key] = value;
+                }
+            });
+
+            // Convert postData to URL query parameters
+            const queryParams = new URLSearchParams(postData).toString();
+
+            // Construct the final URL with user-entered data and submit the form
+            const finalEndpoint = endpoint + '?' + queryParams;
+            window.location.href = finalEndpoint;
+        }
+
+
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Auto-fill latitude and longitude fields in the form
+                        document.getElementById('latitude').value = latitude;
+                        document.getElementById('longitude').value = longitude;
+                    },
+                    (error) => {
+                        console.error("Error getting location:", error);
+                        alert("Error getting location. Please check your settings or try again later.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+function clearForm() {
+    const form = document.getElementById('earthquakeForm');
+
+    // Reset all input values in the form
+    form.reset();
+
+    // Clear latitude and longitude input fields
+    document.getElementById('latitude').value = '';
+    document.getElementById('longitude').value = '';
+
+    // Clear latitude and longitude displays
+    document.getElementById('latitudeDisplay').textContent = '';
+    document.getElementById('longitudeDisplay').textContent = '';
+}
+
+        $(document).ready(function() {
+            // When an image is clicked, toggle fullscreen view
+            $('.image-container img').click(function() {
+                $(this).toggleClass('fullscreen');
+            });
+        });
+</script>
+    <!-- Footer -->
+    <footer>
+        <p><a href="/">www.ogdp.in</a> | <a href="/privacy-policy">Privacy Policy</a> | Email: <a href="mailto:karthikmi@hotmail.com">karthikmi@hotmail.com</a></p>
+    </footer>
+</body>
+</html>
+

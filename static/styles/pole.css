@@ -1,0 +1,63 @@
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin: 20px 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 20px 0; /* Add more space between the header and data */
+        }
+
+        li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 15px;
+            display: flex; /* Use flexbox to display date and data in the same line */
+            align-items: center; /* Vertically align date and data */
+        }
+
+        h3, p {
+            font-size: 16px; /* Apply the same font size to both date and data */
+            margin: 0; /* Remove default margin */
+        }
+
+        h3 {
+            color: #0078d4;
+            margin-right: 10px; /* Add margin to separate date and data */
+        }
+
+        /* Styles for the container of the home button */
+        .home-btn-container {
+            position: fixed;
+            bottom: 20px; /* Adjust the distance from the bottom as needed */
+            left: 50%; /* Place it at the horizontal center */
+            transform: translateX(-50%); /* Adjust to center align horizontally */
+        }
+
+        /* Styles for the home button */
+        .home-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+        }
+
+        .home-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05); /* Scale effect on hover */
+        }
+
